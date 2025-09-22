@@ -215,8 +215,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Ignorar tudo dentro de tmp/
-tmp/*
 
-# Mas manter o placeholder
+tmp/*
 !tmp/.gitkeep
+.idea
