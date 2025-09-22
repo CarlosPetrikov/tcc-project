@@ -1,0 +1,47 @@
+services:
+  mosquitto:
+    container_name: mosquitto
+    restart: always
+    image: eclipse-mosquitto:2-openssl
+    ports:
+      - 1883:1883
+    volumes:
+      - ./mqtt:/etc/mosquitto
+      - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf
+  influxdb:
+    container_name: influxdb
+    restart: always
+    image: influxdb:latest
+    ports:
+      - 8086:8086
+    volumes:
+      - influxdb-storage:/var/lib/influxdb2
+    environment:
+      - INFLUXDB_HTTP_AUTH_ENABLED
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=carlos
+      - DOCKER_INFLUXDB_INIT_PASSWORD=ru3443559
+      - DOCKER_INFLUXDB_INIT_ORG=uninter
+      - DOCKER_INFLUXDB_INIT_BUCKET=smac-iot #Sistema de Monitoramento de Ambientes Climatizados
+  node-red:
+    container_name: node-red
+    restart: always
+    image: nodered/node-red:latest
+    ports:
+      - 1880:1880
+    volumes:
+      - nodered-storage:/data
+  grafana:
+    container_name: grafana
+    restart: always
+    network_mode: host
+    image: grafana/grafana
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+volumes:
+    influxdb-storage:
+    nodered-storage:
+    grafana-storage:
