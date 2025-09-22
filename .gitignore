@@ -218,4 +218,6 @@ __marimo__/
 
 tmp/*
 !tmp/.gitkeep
+!tmp/lib/
+!tmp/lib/**
 .idea
