@@ -1,0 +1,25 @@
+flowchart TD
+    A[Início] --> B[Carrega configuração do Environment]
+    B --> C[Inicializa WiFiManager com SSID e senha]
+    C --> D[Conecta Wi-Fi]
+    D --> E[Inicializa MQTTClientWrapper com WiFi Pool e broker]
+    E --> F[Conecta MQTT ao broker]
+    F --> G[Inicializa DHTSensor no pino do sensor]
+    G --> H[Inicializa LCDDisplay via I2C]
+    H --> I[Loop principal]
+
+    subgraph Loop [Loop principal a cada 2s]
+        I1[Leia temperatura e umidade do DHTSensor] --> I2[Atualiza LCDDisplay com valores]
+        I2 --> I3{Temperatura válida?}
+        I3 -- Sim --> I4[Publica temperatura no tópico MQTT]
+        I3 -- Não --> I5[Ignora temperatura]
+        I4 --> I6{Umidade válida?}
+        I5 --> I6
+        I6 -- Sim --> I7[Publica umidade no tópico MQTT]
+        I6 -- Não --> I8[Ignora umidade]
+        I7 --> I9[Espera 2 segundos]
+        I8 --> I9
+        I9 --> I1
+    end
+
+    I --> Loop

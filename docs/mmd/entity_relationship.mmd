@@ -1,0 +1,24 @@
+erDiagram
+    %% Bucket: smac-iot
+    %% Medições: temperatura e umidade
+    BUCKET_SMAC_IOT {
+        name string "Nome do bucket: smac-iot"
+    }
+
+    TEMPERATURA {
+        _time datetime "Timestamp da leitura"
+        _value float "Valor da temperatura (°C)"
+        _field string "Nome do campo (value)"
+        _measurement string "Nome do measurement (temperatura)"
+    }
+
+    UMIDADE {
+        _time datetime "Timestamp da leitura"
+        _value float "Valor da umidade (%)"
+        _field string "Nome do campo (value)"
+        _measurement string "Nome do measurement (umidade)"
+    }
+
+    %% Relações
+    BUCKET_SMAC_IOT ||--o{ TEMPERATURA : "contém"
+    BUCKET_SMAC_IOT ||--o{ UMIDADE : "contém"
