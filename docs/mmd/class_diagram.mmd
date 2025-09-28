@@ -1,0 +1,76 @@
+classDiagram
+    class Environment {
+        - _CIRCUITPY_WIFI_SSID: str
+        - _CIRCUITPY_WIFI_PASSWORD: str
+        - _MQTT_BROKER: str
+        - _MQTT_CLIENT_ID: str
+        - _TOPIC_TEMPERATURE: str
+        - _TOPIC_HUMIDITY: str
+        - _PIN_DHT22: str
+        - _PIN_DISPLAY_SCL: str
+        - _PIN_DISPLAY_SDA: str
+        + wifi_ssid: str
+        + wifi_password: str
+        + mqtt_broker: str
+        + mqtt_client_id: str
+        + topic_temperature: str
+        + topic_humidity: str
+        + pin_dht22: str
+        + pin_display_scl: str
+        + pin_display_sda: str
+    }
+
+    class WiFiManager {
+        - ssid: str
+        - password: str
+        - pool: SocketPool
+        + __init__(ssid, password)
+        + connect()
+        + get_mac_address() str
+        + get_ip_address() str
+        + ping(host) float|None
+    }
+
+    class MQTTClientWrapper {
+        - pool: SocketPool
+        - broker: str
+        - port: int
+        - username: str
+        - password: str
+        - client_id: str
+        - mqtt_client: MQTT
+        + __init__(pool, broker, port, username, password, client_id)
+        + connect()
+        + publish_float(topic: str, value: float)
+        + on_connect()
+        + on_disconnect()
+        + on_publish()
+    }
+
+    class DHTSensor {
+        - _dht: DHT22
+        + __init__(pin)
+        + read_temperature() float|None
+        + read_humidity() float|None
+        + read_all() tuple[float|None, float|None]
+    }
+
+    class LCDDisplay {
+        - lcd: LCD
+        - SYMBOLS: dict
+        + __init__(scl, sda, i2c_address, num_rows, num_cols)
+        + clear()
+        + update_temperature(temperature: float|None)
+        + update_humidity(humidity: float|None)
+        + update(temperature: float|None, humidity: float|None)
+    }
+
+    %% Relações
+    Environment --> WiFiManager : fornece credenciais Wi-Fi
+    Environment --> MQTTClientWrapper : fornece broker, client_id, tópicos
+    Environment --> DHTSensor : fornece pino do sensor
+    Environment --> LCDDisplay : fornece pinos I2C
+
+    WiFiManager --> MQTTClientWrapper : fornece SocketPool
+    DHTSensor --> LCDDisplay : valores exibidos
+    DHTSensor --> MQTTClientWrapper : valores publicados

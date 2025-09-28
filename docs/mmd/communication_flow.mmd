@@ -1,0 +1,29 @@
+sequenceDiagram
+    box Dispositivo IoT (PI Pico W - CircuitPython)
+        participant DHT22 as Sensor DHT22
+        participant Pico as Raspberry Pi Pico W
+        participant LCD as Display LCD 16x2<br/>(I2C)
+    end
+
+    box Servidor (RPI 5 - Docker Engine)
+        participant Mosquitto as Mosquitto<br/>(MQTT Broker)
+        participant NodeRed as Node-RED<br/>(ETL)
+        participant InfluxDB as InfluxDB<br/>(Banco Série-Temporal)
+        participant Grafana as Grafana<br/>(Visualização)
+
+    end
+
+    actor Usuario as Usuário
+
+    DHT22->>Pico: Leitura de Temperatura & Umidade
+    Pico->>LCD: Exibe Temperatura no Display (via I2C)
+    Pico->>Mosquitto: Publica em "dht22/sensor/umidade"
+    Pico->>Mosquitto: Publica em "dht22/sensor/temperatura"
+
+    Mosquitto-->>NodeRed: Repasse de mensagens MQTT
+    NodeRed->>InfluxDB: Armazena dados no bucket smac-iot
+
+    Grafana->>InfluxDB: Consulta séries temporais
+    InfluxDB-->>Grafana: Retorna dados para visualização
+    Usuario->>Grafana: Acessa Dashboard
+    Grafana-->>Usuario: Exibe gráficos e métricas
