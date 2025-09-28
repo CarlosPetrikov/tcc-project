@@ -90,6 +90,8 @@ O Pi Pico irá:
 * **code\_flow\.mmd** → Fluxo principal do código (`main.py`) com loop de leitura e publicação.
 * **communication\_flow\.mmd** → Sequência de mensagens entre Pi Pico, Mosquitto, Node-RED, InfluxDB e Grafana.
 * **entity\_relationship.mmd** → Modelo do bucket `smac-iot` no InfluxDB.
-* **Diagrama elétrico** → será adicionado futuramente, mostrando a conexão dos pinos do sensor e display.
+* **Diagrama elétrico**: Segue o diagrama para conexão dos componentes
+  
+![Diagrama elétrico](/docs/img/electrical_diagram.png)
 
 ---
