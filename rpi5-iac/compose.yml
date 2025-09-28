@@ -1,0 +1,62 @@
+services:
+  mosquitto:
+    container_name: mosquitto
+    restart: always
+    image: eclipse-mosquitto:2-openssl
+    ports:
+      - 1883:1883
+    volumes:
+      - ./mqtt:/etc/mosquitto
+      - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - smac-net
+
+  influxdb:
+    container_name: influxdb
+    restart: always
+    image: influxdb:latest
+    volumes:
+      - influxdb-storage:/var/lib/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=uninter_tcc_username
+      - DOCKER_INFLUXDB_INIT_PASSWORD=uninter_tcc_password
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=uninter_tcc_token
+      - DOCKER_INFLUXDB_INIT_ORG=uninter
+      - DOCKER_INFLUXDB_INIT_BUCKET=smac-iot
+    networks:
+      - smac-net
+
+  node-red:
+    container_name: node-red
+    restart: always
+    build:
+      context: ./nodered
+    volumes:
+      - nodered-storage:/data
+    networks:
+      - smac-net
+
+  grafana:
+    container_name: grafana
+    restart: always
+    build:
+      context: ./grafana
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - smac-net
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
+
+volumes:
+  influxdb-storage:
+  nodered-storage:
+  grafana-storage:
+
+networks:
+  smac-net:
+    driver: bridge
