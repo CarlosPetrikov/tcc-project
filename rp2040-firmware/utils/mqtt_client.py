@@ -90,6 +90,6 @@ class MQTTClientWrapper:
         """Chamado quando a conexão MQTT é perdida."""
         print("MQTT desconectado!")
 
-    def on_publish(self, client: MQTT, topic: str, pid: int) -> None:
+    def on_publish(self, client: MQTT, userdata: str, topic: str, pid: int) -> None:
         """Chamado quando uma mensagem é publicada com sucesso."""
         print(f"Mensagem publicada em {topic} com pid {pid}")

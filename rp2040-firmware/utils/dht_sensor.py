@@ -1,6 +1,4 @@
-import adafruit_dht
-from digitalio import DigitalInOut, Direction
-from microcontroller import Pin
+from adafruit_dht import DHT22
 
 
 class DHTSensor:
@@ -20,7 +18,7 @@ class DHTSensor:
         pin : microcontroller.Pin
             Pino digital ao qual o DHT22 está conectado.
         """
-        self._dht = adafruit_dht.DHT22(pin)
+        self._dht = DHT22(pin)
 
     def read_temperature(self) -> float | None:
         """

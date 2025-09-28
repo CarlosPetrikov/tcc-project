@@ -1,5 +1,5 @@
 from os import getenv
-
+import board
 
 class Environment:
     """
@@ -18,15 +18,18 @@ class Environment:
 
         # --- Tópicos DHT22 ---
         self._TOPIC_TEMPERATURE: str = getenv("MQTT_TOPIC_TEMPERATURE", "dht22/sensor/temperatura")
-        self._TOPIC_HUMIDITY: str = getenv("MQTT_TOPIC_HUMIDITY", "vvvv")
+        self._TOPIC_HUMIDITY: str = getenv("MQTT_TOPIC_HUMIDITY", "dht22/sensor/umidade")
 
         # --- Pinos ---
         # Sensor DHT22
-        self._PIN_DHT22: str = getenv("PIN_DHT22", "D4")  # Pino digital onde o DHT22 está conectado
+        self._PIN_DHT22: str = getenv("PIN_DHT22", "GP2")
 
         # Display I2C
-        self._PIN_DISPLAY_SCL: str = getenv("PIN_DISPLAY_SCL", "GP15")  # Pino SCL do display
-        self._PIN_DISPLAY_SDA: str = getenv("PIN_DISPLAY_SDA", "GP14")  # Pino SDA do display
+        self._PIN_DISPLAY_SCL: str = getenv("PIN_DISPLAY_SCL", "GP1")
+        self._PIN_DISPLAY_SDA: str = getenv("PIN_DISPLAY_SDA", "GP0")
+
+        # Push Button
+        self._PIN_PUSH_BUTTON: str = getenv("PIN_PUSH_BUTTON", "GP16")
 
     # --- Wi-Fi ---
     @property
@@ -65,17 +68,21 @@ class Environment:
     @property
     def pin_dht22(self) -> str:
         """Retorna o pino digital do sensor DHT22."""
-        return self._PIN_DHT22
+        return getattr(board, self._PIN_DHT22)
 
     @property
     def pin_display_scl(self) -> str:
         """Retorna o pino SCL do display I2C."""
-        return self._PIN_DISPLAY_SCL
+        return getattr(board, self._PIN_DISPLAY_SCL)
 
     @property
     def pin_display_sda(self) -> str:
         """Retorna o pino SDA do display I2C."""
-        return self._PIN_DISPLAY_SDA
+        return getattr(board, self._PIN_DISPLAY_SDA)
 
+    @property
+    def pin_push_button(self) -> str:
+        """Retorna o pino SDA do display I2C."""
+        return getattr(board, self._PIN_PUSH_BUTTON)
 
 env = Environment()

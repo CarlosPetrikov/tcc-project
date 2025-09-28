@@ -5,7 +5,7 @@ from utils.dht_sensor import DHTSensor
 from utils.lcd_display import LCDDisplay
 from utils.mqtt_client import MQTTClientWrapper
 from utils.wifi_manager import WiFiManager
-
+from utils.input_button import PushButton
 
 def main():
     """
@@ -20,17 +20,29 @@ def main():
 
     dht_sensor = DHTSensor(env.pin_dht22)
     lcd = LCDDisplay(env.pin_display_scl, env.pin_display_sda)
+    button = PushButton(env.pin_push_button, pull="UP")
+    lcd.turn_off_backlight()
 
     while True:
-        temperature, humidity = dht_sensor.read_all()
-        lcd.update(temperature, humidity)
+        try:
+            temperature, humidity = dht_sensor.read_all()
+            print(temperature, humidity)
+            lcd.update(temperature, humidity)
 
-        if temperature is not None:
-            mqtt.publish_float(env.topic_temperature, temperature)
-        if humidity is not None:
-            mqtt.publish_float(env.topic_humidity, humidity)
+            if button.is_pressed():
+                lcd.turn_on_backlight()
+                lcd.update(temperature, humidity)
+                sleep(5)
+                lcd.turn_off_backlight()
 
-        sleep(2)
+            if temperature is not None:
+                mqtt.publish_float(env.topic_temperature, temperature)
+            if humidity is not None:
+                mqtt.publish_float(env.topic_humidity, humidity)
+        except Exception as e:
+            print(e)
+        finally:
+            sleep(2)
 
 
 if __name__ == "__main__":

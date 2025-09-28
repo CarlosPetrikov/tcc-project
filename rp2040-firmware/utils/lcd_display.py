@@ -1,6 +1,6 @@
 import busio
-from lcd.i2c_pcf8574_interface import I2CPCF8574Interface
-from lcd.lcd import LCD
+from i2c_pcf8574_interface import I2CPCF8574Interface
+from lcd import LCD
 
 
 class LCDDisplay:
@@ -18,8 +18,8 @@ class LCDDisplay:
         Parameters
         ----------
         scl : busio pin
-            Pino SCL da interface I2C.
-        sda : busio pin
+            Pino SCL da interface I2C.c
+        sda : busio pinc
             Pino SDA da interface I2C.
         i2c_address : int, default=0x27
             Endereço I2C do módulo LCD.
@@ -92,3 +92,9 @@ class LCDDisplay:
         """
         self.update_temperature(temperature)
         self.update_humidity(humidity)
+
+    def turn_on_backlight(self):
+        self.lcd.set_backlight(True)
+
+    def turn_off_backlight(self):
+        self.lcd.set_backlight(False)
